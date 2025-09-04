@@ -1,3 +1,5 @@
+
+
 const Board = () => {
   
   // Function to decide if a square should be light or dark
@@ -13,6 +15,35 @@ const Board = () => {
     const numbers = ['8', '7', '6', '5', '4', '3', '2', '1'];
     return letters[col] + numbers[row];
   };
+
+  // Create column labels (a-h)
+  const renderColumnLabels = () => {
+    const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+    return (
+      <div className="flex">
+        <div className="w-4 sm:w-6 md:w-8"></div> {/* Empty corner */}
+        {letters.map((letter) => (
+          <div
+            key={letter}
+            className="w-8 h-4 sm:w-12 sm:h-6 md:w-16 md:h-8 flex items-center justify-center text-xs sm:text-sm md:text-base font-semibold text-gray-700"
+          >
+            {letter}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  // Create row labels (8-1)
+  const renderRowLabel = (rowIndex: number) => {
+    const numbers = ['8', '7', '6', '5', '4', '3', '2', '1'];
+    return (
+      <div className="w-4 h-8 sm:w-6 sm:h-12 md:w-8 md:h-16 flex items-center justify-center text-xs sm:text-sm md:text-base font-semibold text-gray-700">
+        {numbers[rowIndex]}
+      </div>
+    );
+  };
+
 
   // Create 8 rows
   const renderBoard = () => {
@@ -31,16 +62,19 @@ const Board = () => {
           <div
             key={`${row}-${col}`}
             className={`
-              w-16 h-16 
-              flex items-center justify-center
-              border border-gray-300
-              cursor-pointer
-            ${isLight ? 'bg-[hsl(62.14deg,42.42%,87.06%)]' : 'bg-[hsl(90.45deg,29%,45.29%)]'}
-              hover:opacity-80
-            `}
+        w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16
+        flex items-center justify-center
+        border border-gray-300
+        cursor-pointer
+        text-lg sm:text-xl md:text-2xl
+        transition-colors duration-200
+        ${isLight ? 'bg-[hsl(62.14deg,42.42%,87.06%)]' : 'bg-[hsl(90.45deg,29%,45.29%)]'}
+        hover:opacity-80
+      `}
             title={squareName}
           >
             {/* Empty for now - we'll add pieces later */}
+            {/* <Pieces piece={PieceType}/> */}
           </div>
         );
       }
@@ -48,6 +82,7 @@ const Board = () => {
       // Add this row to our rows array
       rows.push(
         <div key={row} className="flex">
+            {renderRowLabel(row)}
           {squares}
         </div>
       );
@@ -61,7 +96,9 @@ const Board = () => {
       
       <div className="flex justify-center">
         <div className="bg-white p-4 my-5 rounded-lg shadow-lg">
+           
           {renderBoard()}
+          {renderColumnLabels()}
         </div>
       </div>
 
