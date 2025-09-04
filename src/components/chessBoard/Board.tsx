@@ -1,6 +1,20 @@
+import { PieceType } from "../../../utils/chess";
+import Square from "./Square";
 
 
 const Board = () => {
+
+    // initial chessboard
+    const initialBoard: PieceType[][] = [
+         ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'], // Black back row
+    ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'], // Black pawns
+    [null, null, null, null, null, null, null, null], // Empty
+    [null, null, null, null, null, null, null, null], // Empty
+    [null, null, null, null, null, null, null, null], // Empty
+    [null, null, null, null, null, null, null, null], // Empty
+    ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'], // White pawns
+    ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']  
+    ]
   
   // Function to decide if a square should be light or dark
   const isLightSquare = (row :number, col:number) => {
@@ -15,7 +29,13 @@ const Board = () => {
     const numbers = ['8', '7', '6', '5', '4', '3', '2', '1'];
     return letters[col] + numbers[row];
   };
-
+const handleSqaureClick = (row: number, col:number, squareName: string): void => {
+   console.log(`clicked: ${squareName} ${row}, ${col}`)
+   const piece = initialBoard[row][col]
+   if (piece) {
+    console.log(`piece: ${piece}`)
+   }
+}
   // Create column labels (a-h)
   const renderColumnLabels = () => {
     const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
@@ -57,25 +77,19 @@ const Board = () => {
       for (let col = 0; col < 8; col++) {
         const isLight = isLightSquare(row, col);
         const squareName = getSquareName(row, col);
+        const piece = initialBoard[row][col]
         
         squares.push(
-          <div
-            key={`${row}-${col}`}
-            className={`
-        w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16
-        flex items-center justify-center
-        border border-gray-300
-        cursor-pointer
-        text-lg sm:text-xl md:text-2xl
-        transition-colors duration-200
-        ${isLight ? 'bg-[hsl(62.14deg,42.42%,87.06%)]' : 'bg-[hsl(90.45deg,29%,45.29%)]'}
-        hover:opacity-80
-      `}
-            title={squareName}
-          >
-            {/* Empty for now - we'll add pieces later */}
-            {/* <Pieces piece={PieceType}/> */}
-          </div>
+          
+          <Square 
+          key={`${row}-${col}`}
+          row={row}
+          col={col}
+          isLight={isLight}
+          squareName={squareName}
+          piece={piece}
+          onSquareClick={handleSqaureClick}
+          />
         );
       }
       
