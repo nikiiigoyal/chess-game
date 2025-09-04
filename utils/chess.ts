@@ -11,5 +11,7 @@ export interface SquareProps {
   isLight: boolean;
   squareName: string;
   piece: PieceType;
+  isSelected: boolean;
+  isPossibleMove: boolean
   onSquareClick: (row: number, col: number, squareName: string) => void;
 }
