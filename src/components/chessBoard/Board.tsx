@@ -140,7 +140,7 @@ const handleSqaureClick = (row: number, col:number, squareName: string): void =>
       for (let col = 0; col < 8; col++) {
         const isLight = isLightSquare(row, col);
         const squareName = getSquareName(row, col);
-        const piece = initialBoard[row][col]
+        const piece = board[row][col]
         const isSquareSelected = isSelectedSquare(row,col)
         
         squares.push(
@@ -176,10 +176,10 @@ const handleSqaureClick = (row: number, col:number, squareName: string): void =>
       <div className="flex justify-center">
         <div className="bg-white p-4 my-5 rounded-lg shadow-lg">
      
-      <div className="mb-4 p-3 bg-gray-100 rounded-lg text-center">
+      <div className="mb-4 p-2 rounded-lg text-center">
           <h2 className="text-xl font-bold mb-2">Chess Game</h2>
           <p className="text-lg">
-            Current Turn: <span className={`font-bold ${currentPlayer === 'white' ? 'text-blue-600' : 'text-red-600'}`}>
+            Current Turn: <span className={`font-bold ${currentPlayer === 'white' ? 'text-blue-600' : 'text-green-600'}`}>
               {currentPlayer.toUpperCase()}
             </span>
           </p>
