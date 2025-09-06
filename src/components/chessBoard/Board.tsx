@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { PieceType } from "../../../utils/chess";
 import Square from "./Square";
 
@@ -15,7 +16,30 @@ const Board = () => {
     ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'], // White pawns
     ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']  
     ]
-  
+
+// Gamestate to be remembered.
+const [board,setBoard] = useState<PieceType[][]>(initialBoard)
+const [currentPlayer,setCurrentPlayer] = useState<'white' | 'black'>('white')
+const [selectedSqaure, setSelectedSqaure] = useState<{row: number, col: number} | null>(null)
+
+// check if piece is black or white
+const isPlayersPiece = (piece: PieceType, player: 'white' | 'black'): boolean => {
+    if (!piece) return false;
+    if (player === 'white') {
+        return piece === piece.toUpperCase();
+    } else{
+        return piece === piece.toLowerCase() && piece !== piece.toUpperCase();
+    }
+}
+//  check if square is the selected one
+const isSelectedSquare = ( row: number, col: number): boolean => {
+    if (!selectedSqaure) return false;
+    return selectedSqaure.row === row && selectedSqaure.col === col;
+}
+// switch to next player
+const switchPlayer = (): void => {
+    setCurrentPlayer(currentPlayer === 'white'? 'black' : 'white')
+}
   // Function to decide if a square should be light or dark
   const isLightSquare = (row :number, col:number) => {
     // If row + column = even number, it's light
@@ -31,10 +55,49 @@ const Board = () => {
   };
 const handleSqaureClick = (row: number, col:number, squareName: string): void => {
    console.log(`clicked: ${squareName} ${row}, ${col}`)
-   const piece = initialBoard[row][col]
-   if (piece) {
-    console.log(`piece: ${piece}`)
-   }
+   const clickedPiece = board[row][col]
+  // SITUATION A: Nothing is selected yet
+    if (selectedSqaure === null) {
+      console.log("🤔 No piece selected yet...");
+      
+      if (clickedPiece && isPlayersPiece(clickedPiece, currentPlayer)) {
+        // SELECT THIS PIECE
+        setSelectedSqaure({row, col});
+        console.log(`✅ SELECTED: ${clickedPiece} at ${squareName}`);
+      } else if (clickedPiece) {
+        console.log(`❌ WRONG TURN: That piece belongs to ${clickedPiece === clickedPiece.toUpperCase() ? 'white' : 'black'}, but it's ${currentPlayer}'s turn`);
+      } else {
+        console.log(`❌ EMPTY: No piece to select`);
+      }
+    } 
+    // SITUATION B: A piece is already selected
+    else {
+      console.log("🎯 A piece is already selected...");
+      const selectedPiece = board[selectedSqaure.row][selectedSqaure.col];
+      const fromSquare = getSquareName(selectedSqaure.row, selectedSqaure.col);
+      
+      // Clicking the same square = deselect
+      if (selectedSqaure.row === row && selectedSqaure.col === col) {
+        setSelectedSqaure(null);
+        console.log(`🔄 DESELECTED: ${selectedPiece} at ${squareName}`);
+      } 
+      // Clicking different square = try to move
+      else {
+        console.log(`🚀 ATTEMPTING MOVE: ${selectedPiece} from ${fromSquare} to ${squareName}`);
+
+        // create new board with piece moved
+        const newBoard = board.map(boardRow => [...boardRow]);
+        newBoard[row][col] = selectedPiece;
+        newBoard[selectedSqaure.row][selectedSqaure.col] = null
+
+        setBoard(newBoard)
+        setSelectedSqaure(null)
+        switchPlayer();
+
+        console.log(`✅ MOVE COMPLETE: ${selectedPiece} moved from ${fromSquare} to ${squareName}`);
+        console.log(`👤 NOW IT'S ${currentPlayer === 'white' ? 'black' : 'white'}'s TURN`);
+      }
+    }
 }
   // Create column labels (a-h)
   const renderColumnLabels = () => {
@@ -78,18 +141,20 @@ const handleSqaureClick = (row: number, col:number, squareName: string): void =>
         const isLight = isLightSquare(row, col);
         const squareName = getSquareName(row, col);
         const piece = initialBoard[row][col]
+        const isSquareSelected = isSelectedSquare(row,col)
         
         squares.push(
           
           <Square 
-          key={`${row}-${col}`}
-          row={row}
-          col={col}
-          isLight={isLight}
-          squareName={squareName}
-          piece={piece}
-          onSquareClick={handleSqaureClick}
-          />
+                key={`${row}-${col}`}
+                row={row}
+                col={col}
+                isLight={isLight}
+                squareName={squareName}
+                piece={piece}
+                isSelected={isSquareSelected}
+
+                onSquareClick={handleSqaureClick} isPossibleMove={false}          />
         );
       }
       
@@ -110,6 +175,22 @@ const handleSqaureClick = (row: number, col:number, squareName: string): void =>
       
       <div className="flex justify-center">
         <div className="bg-white p-4 my-5 rounded-lg shadow-lg">
+     
+      <div className="mb-4 p-3 bg-gray-100 rounded-lg text-center">
+          <h2 className="text-xl font-bold mb-2">Chess Game</h2>
+          <p className="text-lg">
+            Current Turn: <span className={`font-bold ${currentPlayer === 'white' ? 'text-blue-600' : 'text-red-600'}`}>
+              {currentPlayer.toUpperCase()}
+            </span>
+          </p>
+          {selectedSqaure && (
+            <p className="text-sm text-purple-600 mt-1">
+              Selected: {getSquareName(selectedSqaure.row, selectedSqaure.col)} 
+              ({board[selectedSqaure.row][selectedSqaure.col]})
+            </p>
+          )}
+        </div>
+
            
           {renderBoard()}
           {renderColumnLabels()}
