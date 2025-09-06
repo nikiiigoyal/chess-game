@@ -5,10 +5,11 @@ const Square: React.FC<SquareProps> = ({row,col,isLight,squareName,piece,isSelec
     let backgroundColor = isLight ? 'bg-[hsl(62.14deg,42.42%,87.06%)]' : 'bg-[hsl(90.45deg,29%,45.29%)]'
 
     if (isSelected){
-        backgroundColor = 'bg-[rgb(185 202 67)]'
-    } else if (isPossibleMove){
-backgroundColor = isLight ? 'bg-green-200' : 'bg-green-400'
+        backgroundColor = 'bg-yellow-400'
     }
+//     } else if (isPossibleMove){
+// backgroundColor = isLight ? 'bg-green-200' : 'bg-green-400'
+//     }
     return (
         <>
         <div className={`
