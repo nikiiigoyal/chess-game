@@ -284,12 +284,14 @@ const Board = () => {
                             {currentPlayer.toUpperCase()}
                         </span>
                     </p>
+                    <div className="h-4 mt-1">
                     {selectedSqaure && (
-                        <p className="text-sm text-purple-600 mt-1">
+                        <p className="text-sm text-purple-600">
                             Selected: {getSquareName(selectedSqaure.row, selectedSqaure.col)} 
                             ({board[selectedSqaure.row][selectedSqaure.col]})
                         </p>
                     )}
+                </div>
                 </div>
 
                 {renderBoard()}
